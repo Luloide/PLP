@@ -100,7 +100,24 @@ todosIguales l | null (tail l) = True
 data AB a = Nil | Bin (AB a) a (AB a)
 
 vacioAB :: AB a -> Bool
-vacioAB Nil = True 
-vacioAB (Bin Nil _ Nil) = True 
+vacioAB Nil = True
+vacioAB (Bin Nil _ Nil) = True
 vacioAB _ = False
 
+-- esta instancia es para poder visualizar el arbol al evaluar negacion
+instance Show a => Show (AB a) where
+    show :: Show a => AB a -> String
+    show Nil = "Nil"
+    show (Bin left val right) = "(Bin " ++ show left ++ " " ++ show val ++ " " ++ show right ++ ")"
+
+negacionAB :: AB Bool -> AB Bool
+negacionAB Nil = Nil
+negacionAB (Bin Nil True Nil) = Bin Nil False Nil
+negacionAB (Bin Nil False Nil) = Bin Nil True Nil
+negacionAB (Bin a True b ) = Bin (negacionAB a) False (negacionAB b)
+negacionAB (Bin a False b ) = Bin (negacionAB a) True (negacionAB b)
+
+productoAB :: AB Int -> Int
+productoAB Nil = 1
+productoAB (Bin Nil n Nil) = n
+productoAB (Bin left n right) = n * productoAB left * productoAB right

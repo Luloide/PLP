@@ -30,5 +30,8 @@ uncurry f (x, y) = f x y
 sumFold :: Num a => [a] -> a 
 sumFold = foldr (+) 0 
 
---elem' :: [a] -> a -> Bool
---elem' n= foldr (\x -> x == n) False
+elem' :: (Eq a) => [a] -> a -> Bool
+elem' l n = foldr (\x acc -> x == n || acc) False l
+
+--concat' :: [a] -> [a] -> [a]
+--concat' l s = foldr 

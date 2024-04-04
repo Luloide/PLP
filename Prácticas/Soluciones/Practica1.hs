@@ -1,4 +1,3 @@
-import Data.Binary.Get (label)
 -- Ejercicio 1
 {-
 las que arrancan con ! es que estan currificada
@@ -47,13 +46,25 @@ mejorSegun :: (a -> a -> Bool) -> [a] -> a
 mejorSegun f = foldr1 (\x rec -> if f x rec then x else rec)
 
 
--- lo pienso primero con recursion explicita a ver si veo algo
---sumasParciales :: Num a => [a] -> [a]
+sumasParciales :: Num a => [a] -> [a]
+sumasParciales xs = reverse (foldl (\acc x -> (x + head acc) : acc) [] xs)
 
 
-sumasParcialesaux :: Num a => a -> [a] -> [a] -- necesito un acumulador seguro, entonces foldl?, pero ademas debo devolver una lista
-sumasParcialesaux _ [] = []
-sumasParcialesaux n (x:xs) = (x + n) : sumasParcialesaux (x + n) xs
+sumaAlt :: Num a => [a] -> a
+sumaAlt = foldr (-) 0
 
---sumaAlt :: [Int] -> Int
---sumaAlt = foldr 
+sumaAlt2 :: Num a => [a] -> a
+sumaAlt2 l = foldr (-) 0 (reverse l)
+
+-- ejercicio 4
+
+-- ejercicio 5
+{-
+la funcion entrelazar no es una funcion que utilize recursion estructural, en cambio elementosEnPosicionesPares si.
+-}
+elementosEnPosicionesPares :: [a] -> [a]
+elementosEnPosicionesPares (x : xs)= foldr (\ x rec -> if null rec then [x] else x : tail rec) [] (x : xs) -- no anda
+
+--elementosEnPosicionesPares :: [a] -> [a]
+--elementosEnPosicionesPares [] = []
+--elementosEnPosicionesPares (x:xs) = if null xs then [x] else x : elementosEnPosicionesPares (tail xs)

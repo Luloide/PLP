@@ -63,8 +63,50 @@ sumaAlt2 l = foldr (-) 0 (reverse l)
 la funcion entrelazar no es una funcion que utilize recursion estructural, en cambio elementosEnPosicionesPares si.
 -}
 elementosEnPosicionesPares :: [a] -> [a]
-elementosEnPosicionesPares (x : xs)= foldr (\ x rec -> if null rec then [x] else x : tail rec) [] (x : xs) -- no anda
+elementosEnPosicionesPares l = foldr (\(x,y) acc -> if even x then acc else y: acc) [] (zip[0..] l)
 
---elementosEnPosicionesPares :: [a] -> [a]
---elementosEnPosicionesPares [] = []
---elementosEnPosicionesPares (x:xs) = if null xs then [x] else x : elementosEnPosicionesPares (tail xs)
+--ejercicio 6 
+recr :: (a -> [a] -> b -> b) -> b -> [a] -> b
+recr _ z [] = z
+recr f z (x:xs) = f x xs (recr f z xs) 
+
+sacarUna :: Eq a => a -> [a] -> [a]
+sacarUna n = recr (\x xs acc -> if x == n then xs else x: acc) [] 
+
+-- no es adecuado foldr debido a que necesitamos pasar el tail de la lista a la funcion
+
+insertarOrdenado :: Ord a => a -> [a] -> [a]
+insertarOrdenado n = recr (\x xs acc -> if x >=n then n : x : xs else x : acc) []
+
+-- Ejercicio 8
+mapPares :: (a -> b -> c) -> [(a,b)] -> [c]
+mapPares f = map (\(x,y) -> f x y) -- podria haber puesto tambien map uncurry f
+
+armarPares :: [a] -> [b] -> [(a,b)]
+armarPares  = foldr (\x acc (y:ys) -> (x, y) : acc ys) (const [])
+
+mapDoble :: (a -> b -> c) -> [a] -> [b] -> [c]
+mapDoble f l m= mapPares f (zip l m)
+
+-- ejercicio 10
+generate :: ([a] -> Bool) -> ([a] -> a) -> [a]
+generate stop next = generateFrom stop next []
+
+generateFrom:: ([a] -> Bool) -> ([a] -> a) -> [a] -> [a]
+generateFrom stop next xs | stop xs = init xs
+                          | otherwise = generateFrom stop next (xs ++ [next xs])
+
+--generateBase::([a] -> Bool) -> a -> (a -> a) -> [a]
+--factoriales::Int -> [Int]
+--iterateN :: Int -> (a -> a) -> a -> [a]
+
+-- ejercicio 11
+foldNat :: (Integer -> Integer) -> Integer -> Integer -> Integer
+foldNat f z 1 = z
+foldNat f z n = foldNat f (f n) (n-1)
+
+potencia :: Integer -> Integer -> Integer
+potencia n k = foldNat (\x -> x^k) 0 n
+
+-- ejercicio 13
+data AB a = Nil | Bin (AB a) a (AB a)

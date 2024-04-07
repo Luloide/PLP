@@ -110,3 +110,8 @@ potencia n k = foldNat (\x -> x^k) 0 n
 
 -- ejercicio 13
 data AB a = Nil | Bin (AB a) a (AB a)
+foldAB :: b -> (b -> a -> b -> b) -> AB a -> b
+foldAB cNil cBin Nil = cNil
+foldAB cNil cBin (Bin i r d) = cBin (foldAB cNil cBin i) r (foldAB cNil cBin d)
+
+

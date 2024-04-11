@@ -101,17 +101,33 @@ generateFrom stop next xs | stop xs = init xs
 --iterateN :: Int -> (a -> a) -> a -> [a]
 
 -- ejercicio 11
-foldNat :: (Integer -> Integer) -> Integer -> Integer -> Integer
-foldNat f z 1 = z
-foldNat f z n = foldNat f (f n) (n-1)
+foldNat :: (Integer -> Integer -> Integer) -> Integer -> Integer -> Integer
+foldNat f z 0 = z
+foldNat f z n = f n (foldNat f z (n - 1))
 
 potencia :: Integer -> Integer -> Integer
-potencia n k = foldNat (\x -> x^k) 0 n
+potencia n = foldNat (\x acc -> n * acc) 1  
+
+-- Ejercicio 12
+data Polinomio a = X
+                | Cte a
+                | Suma (Polinomio a) (Polinomio a)
+                | Prod (Polinomio a) (Polinomio a)
+
+foldPoli :: b -> (a -> b) -> (b -> b -> b) -> (b -> b -> b) -> Polinomio a -> b
+foldPoli cX cCte cSuma cProd poli = case poli of
+    X -> cX
+    Cte k -> cCte k
+    Suma p q -> cSuma (rec p) (rec q)
+    Prod p q -> cProd (rec p) (rec q)
+  where rec = foldPoli cX cCte cSuma cProd
+
+
+
+
+
+
 
 -- ejercicio 13
 data AB a = Nil | Bin (AB a) a (AB a)
-foldAB :: b -> (b -> a -> b -> b) -> AB a -> b
-foldAB cNil cBin Nil = cNil
-foldAB cNil cBin (Bin i r d) = cBin (foldAB cNil cBin i) r (foldAB cNil cBin d)
-
 

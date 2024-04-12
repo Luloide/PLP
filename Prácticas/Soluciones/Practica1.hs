@@ -131,3 +131,16 @@ foldPoli cX cCte cSuma cProd poli = case poli of
 -- ejercicio 13
 data AB a = Nil | Bin (AB a) a (AB a)
 
+foldAB :: (b -> a -> b -> b) -> b -> AB a -> b
+foldAB _ acc Nil = acc
+foldAB f acc (Bin i r d) = f (foldAB f acc i) r (foldAB f acc d)
+
+esNil :: AB a -> Bool
+esNil Nil = True
+esNil (Bin _ _ _) = False
+
+altura :: AB a -> Int
+altura = foldAB (\left _ right -> 1 + max left right) 0 
+
+cantNodos :: AB a -> Int
+cantNodos = foldAB (\left _ right -> 1 + left + right) 0

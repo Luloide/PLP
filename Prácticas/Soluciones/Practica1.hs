@@ -1,3 +1,4 @@
+import GHC.HsToCore.Utils (cantFailMatchResult)
 -- Ejercicio 1
 {-
 las que arrancan con ! es que estan currificada
@@ -107,7 +108,7 @@ foldNat f z 0 = z
 foldNat f z n = f n (foldNat f z (n-1))
 
 potencia :: Integer -> Integer -> Integer
-potencia n d = foldNat (\d rec -> n * rec) 1 d
+potencia n d = foldNat (\_ rec -> n * rec) 1 d
 
 --ej 12
 data Polinomio a = X | Cte a | Suma (Polinomio a) (Polinomio a) | Prod (Polinomio a) (Polinomio a)
@@ -159,6 +160,15 @@ cantNodos = foldAB 0 (\left _ right -> 1 + left + right)
 cantHojas :: AB a -> Int
 cantHojas = foldAB 0 (\left _ right -> if (left == 0 && right == 0) then 1 else left + right)
 
+ramas :: AB a -> Int
+ramas = cantHojas
+
+espejo :: AB a -> AB a 
+espejo = recAB Nil (\i r d left right -> Bin d r i)
+
+mismaEStructura :: AB a -> AB b -> Bool
+mismaEStructura t1 t2 = False
+
 --ej 15
 data AIH a = Hoja a | Bin2 (AIH a) (AIH a)
 
@@ -172,3 +182,5 @@ alturaAIH = foldAIH (const 1) (\left right -> max left right) -- por lo que ente
 
 tamano :: AIH a -> Integer 
 tamano = foldAIH (const 1) (\left right -> left + right) -- cantidad de hojitas 
+
+-- Ejercicio 16 

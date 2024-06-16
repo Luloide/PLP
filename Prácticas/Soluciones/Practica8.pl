@@ -67,9 +67,7 @@ juntar([X | Lista1],Lista2, [X | Lista3]) :- juntar(Lista1,Lista2,Lista3).
 
 % 1) last(?L, ?U), donde U es el último elemento de la lista L.
 
-last([X],X).
-last([_ | XS], N) :- last(XS,N).
-% no se me ocuure con append.
+last(L,X) :- append(_,[X],L).
 
 % 2) reverse(+L, -L1), donde L1 contiene los mismos elementos que L, pero en orden inverso.
 
@@ -84,3 +82,4 @@ sufijo(S,L) :- append(L,_,S).
 
 % 5) sublista(?S, +L), donde S es sublista de L
 
+% 6) pertenece(?X, +L), que es verdadero sii el elemento X se encuentra en la lista L. (Este predicado ya viene definido en Prolog y se llama member).

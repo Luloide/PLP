@@ -66,11 +66,9 @@ juntar([X | Lista1],Lista2, [X | Lista3]) :- juntar(Lista1,Lista2,Lista3).
 % ejercicio 5
 
 % 1) last(?L, ?U), donde U es el último elemento de la lista L.
-
 last(L,X) :- append(_,[X],L).
 
 % 2) reverse(+L, -L1), donde L1 contiene los mismos elementos que L, pero en orden inverso.
-
 reverse([],[]).
 reverse([X | XS], L) :- reverse(XS,YS), append(YS,[X],L).
 
@@ -81,8 +79,16 @@ prefijo(L,S) :- append(L,_,S).
 sufijo(S,L) :- append(L,_,S).
 
 % 5) sublista(?S, +L), donde S es sublista de L
+sublista(S,L) :- append(_,L2,L), append(S,_,L2).
 
 % 6) pertenece(?X, +L), que es verdadero si el elemento X se encuentra en la lista L. (Este predicado ya viene definido en Prolog y se llama member).
-pertenece(X,[X]).
-pertenece(X,[Y | _]):- X = Y, pertenece(X,[Y]).
-pertenece(X,[_ | YS]):- pertenece(X,YS). 
+pertenece(X,L):- append(_,[X | _],L).
+
+% Ejercicio 6
+/*
+Definir el predicado aplanar(+Xs, -Ys), que es verdadero sii Ys contiene los elementos de todos los niveles de
+Xs, en el mismo orden de aparición. Los elementos de Xs son enteros, átomos o nuevamente listas, de modo que
+Xs puede tener una profundidad arbitraria. Por el contrario, Ys es una lista de un solo nivel de profundidad.
+*/
+aplanar([],[],[]).
+aplanar([X | XS], L) :- aplanar(XS, [X | L]).

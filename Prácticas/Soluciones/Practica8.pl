@@ -82,4 +82,7 @@ sufijo(S,L) :- append(L,_,S).
 
 % 5) sublista(?S, +L), donde S es sublista de L
 
-% 6) pertenece(?X, +L), que es verdadero sii el elemento X se encuentra en la lista L. (Este predicado ya viene definido en Prolog y se llama member).
+% 6) pertenece(?X, +L), que es verdadero si el elemento X se encuentra en la lista L. (Este predicado ya viene definido en Prolog y se llama member).
+pertenece(X,[X]).
+pertenece(X,[Y | _]):- X = Y, pertenece(X,[Y]).
+pertenece(X,[_ | YS]):- pertenece(X,YS). 

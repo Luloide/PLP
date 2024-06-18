@@ -90,5 +90,7 @@ Definir el predicado aplanar(+Xs, -Ys), que es verdadero sii Ys contiene los ele
 Xs, en el mismo orden de aparición. Los elementos de Xs son enteros, átomos o nuevamente listas, de modo que
 Xs puede tener una profundidad arbitraria. Por el contrario, Ys es una lista de un solo nivel de profundidad.
 */
-aplanar([],[],[]).
-aplanar([X | XS], L) :- aplanar(XS, [X | L]).
+aplanar([],[]).
+aplanar([[] | XS], L) :- aplanar(XS, L).
+aplanar([[Y | YS] | XS], [Y | L]) :- append(YS, XS, L2), aplanar(L2, L).
+aplanar([X | XS], [X | L]) :- aplanar(XS,L).

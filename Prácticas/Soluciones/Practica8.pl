@@ -113,6 +113,25 @@ partir(N, L, L1, L2), donde L1 tiene los N primeros elementos de L, y L2 el rest
 elementos el predicado debe fallar. ¿Cuán reversible es este predicado? Es decir, ¿qué parámetros pueden
 estar indefinidos al momento de la invocación?
 */
-intersección([],_,[]).
-intersección([X|XS], L2, L3):- \+ member(X,L2), intersección(XS,L2,L3).
-intersección([X|XS], L2, [X|L3]):- member(X,L2), intersección(XS, L2,L3).
+intersección([],_,[]). % si L1 es vacia entonces no hay interseccion
+intersección([X|XS], L2, L3):- \+ member(X,L2), intersección(XS,L2,L3). % si X no pertence a L2, continuo
+intersección([X|XS], L2, [X|L3]):- member(X,L2), \+ member(X,L3), intersección(XS, L2,L3). % si X pertenece a L2 y a no a L3 la agrego.
+intersección([X|XS], L2, L3):- member(X,L2),member(X,L3), intersección(XS, L2,L3). % si X pertenece L2 y no a L3 lo agrego a L3.
+
+ % no estoy entendiendo bien porque no anda interseccion
+
+partir(0, L, [], L).
+partir(N,[X|XS],[X|L1],L2) :-  N1 is N - 1, partir(N1,XS,L1,L2).
+
+% 2) borrar(+ListaOriginal, +X, -ListaSinXs), que elimina todas las ocurrencias de X de la lista ListaOriginal.
+
+borrar([],_,[]). % si la lista esta vacia entonces no hay elementos que sacarle.
+borrar([X|XS],Y,[X|L]) :- X \= Y, borrar(XS,Y,L). % si la lista no tiene al elemento Y, agregamos X a L.
+borrar([X|XS],X,L) :- borrar(XS,X,L). % si la lista tiene al elemento X, lo ignoramos.
+
+% 3) sacarDuplicados(+L1, -L2), que saca todos los elementos duplicados de la lista L1.
+
+sacarDuplicados([],[]). % si L1 esta vacia, no hay nada que sacar.
+sacarDuplicados([X|XS],L) :- member(X,L), sacarDuplicados(XS,L).
+sacarDuplicados([X|XS],L) :- \+ member(X,L), append(X,L3,L), sacarDuplicados(XS,L3).
+% no terminado yet.

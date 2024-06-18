@@ -90,7 +90,29 @@ Definir el predicado aplanar(+Xs, -Ys), que es verdadero sii Ys contiene los ele
 Xs, en el mismo orden de aparición. Los elementos de Xs son enteros, átomos o nuevamente listas, de modo que
 Xs puede tener una profundidad arbitraria. Por el contrario, Ys es una lista de un solo nivel de profundidad.
 */
-aplanar([],[]).
+
+/*
+pensando los casos:
+caso base: si la Xs es vacia entonces Ys debe ser vacia
+
+Xs es una lista [X |XS]:
+- si X es un elemento y no una lista, lo agrego a YS
+- si X es una lista
+    - si su primer elemento no es una lista entonces agregarlo a YS
+    - si su primer elemento es una lista deberia aplanarlo, aplanar XS y juntar el resultado
+*/
+aplanar([], []).
 aplanar([[] | XS], L) :- aplanar(XS, L).
-aplanar([[Y | YS] | XS], [Y | L]) :- append(YS, XS, L2), aplanar(L2, L).
-aplanar([X | XS], [X | L]) :- aplanar(XS,L).
+aplanar([X | XS], L) :- is_list(X), aplanar(X, L2), aplanar(XS, L3), append(L2, L3, L). % Si X es una lista.
+aplanar([X | XS], [X | L]) :- \+ is_list(X), aplanar(XS, L). % Si X no es una lista.
+
+% Ejercicio 8
+/*
+1)  intersección(+L1, +L2, -L3), tal que L3 es la intersección sin repeticiones de las listas L1 y L2, respetando en L3 el orden en que aparecen los elementos en L1.
+partir(N, L, L1, L2), donde L1 tiene los N primeros elementos de L, y L2 el resto. Si L tiene menos de N
+elementos el predicado debe fallar. ¿Cuán reversible es este predicado? Es decir, ¿qué parámetros pueden
+estar indefinidos al momento de la invocación?
+*/
+intersección([],_,[]).
+intersección([X|XS], L2, L3):- \+ member(X,L2), intersección(XS,L2,L3).
+intersección([X|XS], L2, [X|L3]):- member(X,L2), intersección(XS, L2,L3).

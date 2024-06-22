@@ -104,7 +104,7 @@ Xs es una lista [X |XS]:
 aplanar([], []).
 aplanar([[] | XS], L) :- aplanar(XS, L).
 aplanar([X | XS], L) :- is_list(X), aplanar(X, L2), aplanar(XS, L3), append(L2, L3, L). % Si X es una lista.
-aplanar([X | XS], [X | L]) :- \+ is_list(X), aplanar(XS, L). % Si X no es una lista.
+aplanar([X | XS], [X | L]) :- not(is_list(X)), aplanar(XS, L). % Si X no es una lista.
 
 % Ejercicio 8
 /*
@@ -114,11 +114,13 @@ elementos el predicado debe fallar. ¿Cuán reversible es este predicado? Es dec
 estar indefinidos al momento de la invocación?
 */
 intersección([],_,[]). % si L1 es vacia entonces no hay interseccion
-intersección([X|XS], L2, L3):- \+ member(X,L2), intersección(XS,L2,L3). % si X no pertence a L2, continuo
-intersección([X|XS], L2, [X|L3]):- member(X,L2), \+ member(X,L3), intersección(XS, L2,L3). % si X pertenece a L2 y a no a L3 la agrego.
-intersección([X|XS], L2, L3):- member(X,L2),member(X,L3), intersección(XS, L2,L3). % si X pertenece L2 y no a L3 lo agrego a L3.
+intersección([X|XS], L2, L3):- not(member(X,L2)), intersección(XS,L2,L3). % si X no pertence a L2, continuo
+intersección([X|XS], L2, [X|L3]):- member(X,L2), sacar(X,L2,Lnueva), intersección(XS, Lnueva,L3). % si X pertenece L2, saco los X de L2 y continuo.
 
- % no estoy entendiendo bien porque no anda interseccion
+% saca el elemento X de una lista L
+sacar(_,[],[]).
+sacar(X,[Y|L], [Y|L3]) :- X \= Y, sacar(X,L,L3).
+sacar(X,[X|L], L3) :- sacar(X,L,L3).
 
 partir(0, L, [], L).
 partir(N,[X|XS],[X|L1],L2) :-  N1 is N - 1, partir(N1,XS,L1,L2).
@@ -132,6 +134,11 @@ borrar([X|XS],X,L) :- borrar(XS,X,L). % si la lista tiene al elemento X, lo igno
 % 3) sacarDuplicados(+L1, -L2), que saca todos los elementos duplicados de la lista L1.
 
 sacarDuplicados([],[]). % si L1 esta vacia, no hay nada que sacar.
-sacarDuplicados([X|XS],L) :- member(X,L), sacarDuplicados(XS,L).
-sacarDuplicados([X|XS],L) :- \+ member(X,L), append(X,L3,L), sacarDuplicados(XS,L3).
-% no terminado yet.
+sacarDuplicados([X|XS],L) :- member(X,XS), sacarDuplicados(XS,L).
+sacarDuplicados([X|XS],[X|L]) :- not(member(X,XS)), sacarDuplicados(XS,L).
+
+% 4) permutación(+L1, ?L2), que tiene éxito cuando L2 es permutación de L1. ¿Hay una manera más eficiente de definir este predicado para cuando L2 está instanciada?
+
+%permutación()
+
+% 5) reparto(+L, +N, -LListas) que tenga éxito si LListas es una lista de N listas (N ≥ 1) de cualquier longitud - incluso vacías - tales que al concatenarlas se obtiene la lista L.

@@ -142,3 +142,71 @@ sacarDuplicados([X|XS],[X|L]) :- not(member(X,XS)), sacarDuplicados(XS,L).
 %permutación()
 
 % 5) reparto(+L, +N, -LListas) que tenga éxito si LListas es una lista de N listas (N ≥ 1) de cualquier longitud - incluso vacías - tales que al concatenarlas se obtiene la lista L.
+
+% Instanciación y reversibilidad
+%Ejercicio 10 ⋆
+%Considerar el siguiente predicado:
+desde(X,X).
+desde(X,Y) :- N is X+1, desde(N,Y).
+
+% i) ¿Cómo deben instanciarse los parámetros para que el predicado funcione? (Es decir, para que no se cuelgue ni produzca un error). ¿Por qué?
+/*
+para que el predicado funcione debe de estar insanciado de esta manera desde(+X,-Y).
+si instanciamos Y e X, el predicado nos devuelve X por el hecho desde(X,X) si se le pide mas resultados se cuelga debido a que
+N is X+1 va a infinitamente sumar 1 y nunca va a llegar a Y.
+*/
+% ii) Dar una nueva versión del predicado que funcione con la instanciación desde2(+X,?Y), tal que si Y está
+%instanciada, sea verdadero si Y es mayor o igual que X, y si no lo está genere todos los Y de X en adelante.
+
+desde2(X,X).
+desde2(X,Y) :- var(Y), N is X+1, desde(N,Y).
+desde2(X,Y) :- nonvar(Y), X < Y.
+
+/*
+Ejercicio 12 ⋆
+Un árbol binario se representará en Prolog con:
+    - nil, si es vacío.
+    - bin(izq, v, der), donde v es el valor del nodo, izq es el subárbol izquierdo y der es el subárbol derecho.
+Definir predicados en Prolog para las siguientes operaciones: vacío, raiz, altura y cantidadDeNodos. Asumir
+siempre que el árbol está instanciado. 
+
+bin(bin(nil, 2,nil) ,1, bin(nil, 3, bin(nil, 4, nil)))
+*/
+vacío(nil).
+raiz(bin(_ ,V, _), V).
+
+
+altura(nil,0).
+altura(bin(I,_,D), A) :- altura(I, AI), altura(D, AD), maximo(AI,AD,AT), A is AT + 1.
+
+maximo(X,Y,X) :- X >= Y.
+maximo(X,Y,Y) :- Y > X.
+
+
+cantidadDeNodos(nil,0).
+cantidadDeNodos(bin(I,_,D),C) :- cantidadDeNodos(I,C1), cantidadDeNodos(D,C2), CA is C1+C2, C is CA + 1.
+
+%Ejercicio 13 ⋆
+%Definir los siguientes predicados, utilizando la representación de árbol binario definida en el ejercicio 12:
+
+%i.inorder(+AB,-Lista), que tenga éxito si AB es un árbol binario y Lista la lista de sus nodos según el recorrido inorder.
+
+inorder(nil, []).
+inorder(bin(I,R,D), L) :- inorder(I,L1), inorder(D,L2), append(L1,[R|L2],L).
+
+% ii. arbolConInorder(+Lista,-AB), versión inversa del predicado anterior.
+
+arbolConInorder([],nil).
+arbolConInorder([X|XS], bin(I,X,D)) :- arbolConInorder(XS,I), arbolConInorder(XS,D). %no anda
+
+% iii. aBB(+T), que será verdadero si T es un árbol binario de búsqueda.
+
+aBB(nil).
+aBB(bin(nil,_,nil)).
+aBB(bin((bin(I1,R1,I2)),R,nil)) :- R1 < R, aBB(bin(I1,R1,I2)).
+aBB(bin(nil,R,(bin(I2,R2,D2)))) :- R > R2, aBB(bin(I2,R2,D2)).
+aBB(bin(bin(I1,R1,D1),R,bin(I2,R2,D2))) :- R1 < R, R2 > R, aBB(bin(I1,R1,D1)), aBB(bin(I2,R2,D2)).
+
+%bin(bin(bin(nil,1,nil), 2,nil) ,3, bin(nil, 4, nil)) ejemplo de ABB
+
+%iv. aBBInsertar(+X, +T1, -T2), donde T2 resulta de insertar X en orden en el árbol T1. Este predicado ¿es reversible en alguno de sus parámetros? Justificar.

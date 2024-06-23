@@ -210,3 +210,12 @@ aBB(bin(bin(I1,R1,D1),R,bin(I2,R2,D2))) :- R1 < R, R2 > R, aBB(bin(I1,R1,D1)), a
 %bin(bin(bin(nil,1,nil), 2,nil) ,3, bin(nil, 4, nil)) ejemplo de ABB
 
 %iv. aBBInsertar(+X, +T1, -T2), donde T2 resulta de insertar X en orden en el árbol T1. Este predicado ¿es reversible en alguno de sus parámetros? Justificar.
+
+%Generate & Test
+%Ejercicio 14 ⋆
+%Definir el predicado coprimos(-X,-Y), que genere uno a uno todos los pares de números naturales coprimos (es decir, cuyo máximo común divisor es 1), sin repetir resultados. Usar la función gcd del motor aritmético.
+
+coprimos(X,Y) :- generarPares(X,Y), gcd(X,Y) =:= 1. 
+
+paresSuman(S,X,Y) :- S1 is S-1, between(1,S1,X), Y is S-X.  
+generarPares(X,Y) :- desde2(2,S), paresSuman(S,X,Y).

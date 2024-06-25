@@ -216,6 +216,18 @@ aBB(bin(bin(I1,R1,D1),R,bin(I2,R2,D2))) :- R1 < R, R2 > R, aBB(bin(I1,R1,D1)), a
 %Definir el predicado coprimos(-X,-Y), que genere uno a uno todos los pares de números naturales coprimos (es decir, cuyo máximo común divisor es 1), sin repetir resultados. Usar la función gcd del motor aritmético.
 
 coprimos(X,Y) :- generarPares(X,Y), gcd(X,Y) =:= 1. 
-
 paresSuman(S,X,Y) :- S1 is S-1, between(1,S1,X), Y is S-X.  
 generarPares(X,Y) :- desde2(2,S), paresSuman(S,X,Y).
+
+% Ejercicio 15
+% i)
+% existe una matriz la cual todas sus filas suman lo mismo
+% cuadradoSemiLatino(N, XS) :- generarMatriz(N,XS), sumanLoMismoFilas(XS).
+
+% para cada columna N genero una lista de numeros de largo N 
+generarMatriz(0,_,[]).
+generarMatriz(N,F,L) :- crearLista(F, Fila), append(Fila,L2,L), N2 is N-1, generarMatriz(N2,F,L2).
+
+%crearLista(+N,-L) dada una longitud N, instancia en L una lista de longitud N con numeros
+crearLista(0,[]).
+crearLista(N,L) :- desde2(1,X), append(X,L2,L), N2 is N - 1, crearLista(N2,L2).

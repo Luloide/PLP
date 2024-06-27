@@ -222,12 +222,133 @@ generarPares(X,Y) :- desde2(2,S), paresSuman(S,X,Y).
 % Ejercicio 15
 % i)
 % existe una matriz la cual todas sus filas suman lo mismo
-% cuadradoSemiLatino(N, XS) :- generarMatriz(N,XS), sumanLoMismoFilas(XS).
+
+cuadradoSemiLatino(N, XS) :- generarMatriz(N,N,XS), sumanLoMismoFilas(XS).
 
 % para cada columna N genero una lista de numeros de largo N 
 generarMatriz(0,_,[]).
-generarMatriz(N,F,L) :- crearLista(F, Fila), append(Fila,L2,L), N2 is N-1, generarMatriz(N2,F,L2).
+generarMatriz(N,N1,[Fila|L]) :- N > 0, crearLista(N1, Fila), N2 is N-1, generarMatriz(N2,N1,L).
 
-%crearLista(+N,-L) dada una longitud N, instancia en L una lista de longitud N con numeros
-crearLista(0,[]).
-crearLista(N,L) :- desde2(1,X), append(X,L2,L), N2 is N - 1, crearLista(N2,L2).
+% crearLista(+N,-L) dada una longitud N, instancia en L una lista de longitud N con numeros
+crearLista(0, []).
+crearLista(N, [X|L]) :- N > 0, between(0, N, X), N2 is N - 1, crearLista(N2, L).
+
+
+% sumanLoMismoFilas(+Matriz) verifica que todas las filas de la matriz sumen lo mismo
+sumanLoMismoFilas([]).
+sumanLoMismoFilas([Fila|Resto]) :-
+    sum_list(Fila, Suma),
+    todasSumasIguales(Suma, Resto).
+
+% todasSumasIguales(+Suma, +Filas) verifica que todas las filas en la lista sumen suma
+todasSumasIguales(_, []).
+todasSumasIguales(Suma, [Fila|Resto]) :-
+    sum_list(Fila, Suma),
+    todasSumasIguales(Suma, Resto).
+
+% ii)
+cuadradoMagico(N, XS) :- generarMatriz(N, N, XS), sumanLoMismoFilas(XS), sumaLoMismoColumnas(XS, N), sumaLoMimoDiagonal(XS, N).
+
+sumaLoMimoDiagonal(M,N) :- sumaDiagonalIzq(M,0,Suma), sumaDiagonalDer(M,0,N,Suma).
+
+sumaDiagonalIzq([], _, 0).
+sumaDiagonalIzq([Fila|XS], Index, Suma) :- nth0(Index, Fila, Elemento), Index2 is Index + 1, sumaDiagonalIzq(XS, Index2, SumaResto), Suma is Elemento + SumaResto.
+
+sumaDiagonalDer([], _, _, 0).
+sumaDiagonalDer([Fila|XS], Index, N, Suma) :- N2 is N - 1, nth0(N2, Fila, Elemento), sumaDiagonalDer(XS, Index, N2, SumaResto), Suma is Elemento + SumaResto.
+
+%sumaLoMismoColumnas(+M,+ N) tiene exito cuando las columnas de la matriz M suman todas igual
+sumaLoMismoColumnas(M, N) :- sumColuma(M,0,Suma), todasSumanigualColumnas(Suma,M,N).
+todasSumanigualColumnas(Suma,M,N) :- N2 is N-1 , between(0,N2,I), sumColuma(M,I,Suma).
+
+sumColuma([],_,0).
+sumColuma([Fila|XS],Index,Suma) :- nth0(Index, Fila, Elemento), sumColuma(XS, Index, SumaResto), Suma is Elemento + SumaResto.
+
+% Ejercicio 16
+/*
+En este ejercicio trabajaremos con triángulos. La expresión tri(A,B,C) denotará el triángulo cuyos lados tienen
+longitudes A, B y C respectivamente. Se asume que las longitudes de los lados son siempre números naturales.
+Implementar los siguientes predicados:
+
+i. esTriángulo(+T) que, dada una estructura de la forma tri(A,B,C), indique si es un triángulo válido.
+En un triángulo válido, cada lado es menor que la suma de los otros dos, y mayor que su diferencia (y
+obviamente mayor que 0).
+*/
+esTriángulo(tri(A,B,C)) :- A < B + C, B < A + C, C < A + B.
+
+/*
+perímetro(?T,?P), que es verdadero cuando T es un triángulo (válido) y P es su perímetro. No
+se deben generar resultados repetidos (no tendremos en cuenta la congruencia entre triángulos: si
+dos triángulos tienen las mismas longitudes, pero en diferente orden, se considerarán diferentes entre sí). 
+El predicado debe funcionar para cualquier instanciación de T y P (ambas instanciadas, ambas sin instanciar, una instanciada y una no; no es necesario que funcione para triángulos parcialmente instanciados), 
+debe generar todos los resultados válidos (sean finitos o infinitos), y no debe colgarse (es decir, no debe seguir ejecutando infinitamente sin producir nuevos resultados). 
+*/
+
+perimetro(tri(A,B,C),P) :- ground(tri(A,B,C)), esTriángulo(tri(A,B,C)), P is A+B+C.
+perimetro(tri(A,B,C),P) :- not(ground(tri(A,B,C))), armarTriplas(P,A,B,C), esTriángulo(tri(A,B,C)).
+
+armarTriplas(P,A,B,C) :- desde2(3,P), between(0,P,A), S is P-A, between(0,S,B), C is S-B.
+
+%iii. triángulo(-T), que genera todos los triángulos válidos, sin repetir resultados.
+triángulo(T) :- perimetro(T,_).
+
+% negacion por falla y cut
+% Ejercicio 17: A Ana le gustan los helados que sean a la vez cremosos y frutales. En una heladería de su barrio, se encontró con los siguientes sabores:
+frutal(frutilla).
+frutal(banana).
+frutal(manzana).
+cremoso(banana).
+cremoso(americana).
+cremoso(frutilla).
+cremoso(dulceDeLeche).
+% Ana desea comprar un cucurucho con sabores que le gustan. El cucurucho admite hasta 2 sabores. Los siguientes
+% predicados definen las posibles maneras de armar el cucurucho.
+leGusta(X) :- frutal(X), cremoso(X).
+cucurucho(X,Y) :- leGusta(X), leGusta(Y).
+
+/*
+i. Escribir el árbol de búsqueda para la consulta ?- cucurucho(X,Y).
+
+en el cuaderno
+
+ii. Indicar qué partes del árbol se podan al colocar un ! en cada ubicación posible en las definiciones de
+cucurucho y leGusta.
+
+leGusta(X) :- frutal(X), cremoso(X), !.
+cucurucho(X,Y) :- leGusta(X), leGusta(Y), !.
+
+*/
+
+/*
+Ejercicio 18 
+i. Sean los predicados P(?X) y Q(?X), ¿qué significa la respuesta a la siguiente consulta?
+?- P(Y), not(Q(Y)).
+ significa que existe un Y que cumple con P y no cumple con Q.
+
+ii. ¿Qué pasaría si se invirtiera el orden de los literales en la consulta anterior?
+si se invierte el orden nos quedaria not(Q(Y)), P(Y), esto hace que cambie el orden se evaluen las condiciones
+ - en not(Q(Y)), P(Y) verifica que exista un Y que no cumpla Q y despues que este Y cumpla P
+ - en P(Y), not(Q(Y)) verifica que exista un Y que cumpla P y despues verifica que esta Y no cumpla con Q
+
+si Q esta indefinidio para ciertos valores de Y, entonces puede que no se obtenga el mismo resultado.
+
+iii. Sea el predicado P(?X), ¿Cómo se puede usar el not para determinar si existe una única Y tal que P(?Y)
+es verdadero?
+
+P(Y), not(P(X)), X \= Y.
+*/
+
+/*
+Ejercicio 19
+Definir el predicado corteMásParejo(+L,-L1,-L2) que, dada una lista de números, realiza el corte más parejo
+posible con respecto a la suma de sus elementos (puede haber más de un resultado). 
+*/
+
+corteMásParejo(L,L1,L2) :- unCorte(L,L1,L2,Dif), not((unCorte(L,_,_,Dif2), Dif2 < Dif)).
+
+unCorte(L,L1,L2,Dif) :- append(L1,L2,L), sumlist(L1,S1), sumlist(L2,S2), Dif is abs(S1-S2).
+
+% Ejercicios Integradores 
+/*
+
+*/

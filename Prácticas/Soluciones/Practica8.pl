@@ -352,3 +352,24 @@ unCorte(L,L1,L2,Dif) :- append(L1,L2,L), sumlist(L1,S1), sumlist(L2,S2), Dif is 
 /*
 
 */
+
+% estos son ejercicios de parciales viejos, no es de la practica 8.
+% sgundo cuatri 2023.
+palabra(_,0,[]).
+palabra(A,N,[X|XS]) :- member(X,A), N > 0, N2 is N-1, palabra(A,N2,XS).
+
+% recu , segundo cuatri, 2023
+camino(bin(nil,V,nil),[V]).
+camino(bin(I,V,_),[V|Xs]) :- camino(I,Xs).
+camino(bin(_,V,D),[V|Xs]) :- camino(D,Xs).
+
+caminoMasLargo(A,C) :- camino(A,C), length(C,L), not((camino(A,C2), length(C2,L2), L2 > L)).
+
+caminoUnicoDeLong(A,N,C) :- camino(A,C), length(C,N), not((camino(A,C2), C \= C2, length(C2,N))).
+
+
+
+sonPrimosContiguos(X,Y) :- between(X, Y, I), not(esPrimo(I)).
+
+esPrimo(2).
+esPrimo(X) :- X > 2, Top is X - 1, between(2,Top,I), not(X mod I = 0).

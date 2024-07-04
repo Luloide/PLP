@@ -366,10 +366,3 @@ camino(bin(_,V,D),[V|Xs]) :- camino(D,Xs).
 caminoMasLargo(A,C) :- camino(A,C), length(C,L), not((camino(A,C2), length(C2,L2), L2 > L)).
 
 caminoUnicoDeLong(A,N,C) :- camino(A,C), length(C,N), not((camino(A,C2), C \= C2, length(C2,N))).
-
-
-
-sonPrimosContiguos(X,Y) :- between(X, Y, I), not(esPrimo(I)).
-
-esPrimo(2).
-esPrimo(X) :- X > 2, Top is X - 1, between(2,Top,I), not(X mod I = 0).

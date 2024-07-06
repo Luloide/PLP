@@ -1,19 +1,12 @@
-montana(L,L1,C,L2) :- subidaMasGrande(L,S), bajada(L,L2), append(S,L2,L), append(L1,[C],S), noMismoNivel(S,L2).
 
+montana(L, L1, C, L2) :-  append(L1, [C|L2], L),L2 \= [], esCreciente(L1),  esDecreciente([C|L2]). 
 
-noMismoNivel(S,[Y|_]) :- last(X,S) , X \= Y.
+esCreciente([]).             
+esCreciente([_]).           
+esCreciente([X, Y|Xs]) :-  X < Y, esCreciente([Y|Xs]).
 
-subidaMasGrande(L,S) :- subida(L,S), not((subida(L,S2), length(S,SL), length(S2,S2L), S2L > SL)).
-subida(L,S) :- append(S,_,L), esCreciende(S).
-
-esCreciende([_]).
-esCreciende([X,Y|Xs]) :- X<Y , esCreciende([Y|Xs]).
-
-bajada(L,S) :- append(_,S,L), esDecreciente(S).
-
-esDecreciente([_]).
-esDecreciente([X,Y|Xs]) :- X>Y, esCreciende([Y|Xs]).
-
+esDecreciente([_]).        
+esDecreciente([X, Y|Xs]) :- X > Y, esDecreciente([Y|Xs]).
 
 todasLasListas(A,L) :- desde(1,S), generarLista(A,L,S).
 
@@ -42,14 +35,4 @@ todosPrimos([X|XS]) :- esPrimo(X), todosPrimos(XS).
 
 esPrimo(P) :- P \= 1, P2 is P-1, not((between(2,P2,D), mod(P,D) =:= 0)).
 
-%%%%%%%%%%%%%%%%%%%%
-palabra(A,Len,P) :- generarLista(A,P,Len).
-
- % frase no anda, no lo entiendo
-frase(_,[]).
-frase(A,[F|Fs]) :- desde(1,S), palabraDeLargoHasta(A,L,F), between(0,L,L2), length([F|FS],L2), L3 is L2-1, frase2(A,FS,L3,L).
-
-palabraDeLargoHasta(A,F,L) :- between(1,L,Len), palabra(A,Len,F).
-
-frase2(A,[],0,_).
-frase2(A,[X|XS],N,L) :- palabraDeLargoHasta(A,L,X), N2 is N-1, frase2(A, XS,N2,L).
+elemento(L,P) :- member(P,L), P > 3.

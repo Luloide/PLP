@@ -11,6 +11,11 @@ elem2 elem = foldr (\x rec -> if x == elem then True else rec) False
 mapa :: (a -> b) -> [a] -> [b]
 mapa f = foldr (\elem rec -> (f elem) : rec) []
 
+-- un test mio nomas, intento definir fold a partir de rec
+foldABRec ::b -> (b -> a -> b -> b) -> AB a -> b 
+foldABRec fNil fBin = recAB fNil (\_ r _ i d -> fBin i r d)
+
+
 -- esto vendria a ser fliter 
 filter2 :: (a -> Bool) -> [a] -> [a]
 filter2 f = foldr (\x rec -> if f x then x : rec else rec) []
@@ -28,7 +33,7 @@ foldNat :: (Integer -> b -> b) -> b -> Integer -> b
 foldNat f z 1 = z
 foldNat f z n = f n (foldNat f z (n-1))
 
--- potencia ceria a^b
+-- potencia seria a^b
 potencia :: Integer -> Integer -> Integer
 potencia a b = foldNat (\_ rec -> a * rec) a b
 

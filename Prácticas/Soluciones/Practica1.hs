@@ -1,4 +1,3 @@
-import GHC.HsToCore.Utils (cantFailMatchResult)
 -- Ejercicio 1
 {-
 las que arrancan con ! es que estan currificada
@@ -183,4 +182,12 @@ alturaAIH = foldAIH (const 1) (\left right -> max left right) -- por lo que ente
 tamano :: AIH a -> Integer 
 tamano = foldAIH (const 1) (\left right -> left + right) -- cantidad de hojitas 
 
--- Ejercicio 16 
+-- Ejercicio 16
+data RoseTree a = Rose a [RoseTree a]
+
+foldRT :: (a -> [b] -> b) -> RoseTree a -> b
+foldRT f (Rose x hijos) = f x (map (foldRT f) hijos)
+
+hojas :: RoseTree a -> [a]
+hojas = foldRT (\x hijos -> if null hijos then [x] else concat hijos)
+

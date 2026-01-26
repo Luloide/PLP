@@ -60,10 +60,13 @@ sumaAlt2 l = foldr (-) 0 (reverse l)
 
 -- ejercicio 5
 {-
-la funcion entrelazar no es una funcion que utilize recursion estructural, en cambio elementosEnPosicionesPares si.
+elementosEnPosicionesPares no utiliza recursion estructural ya al hacer null xs no cumple con esta parte de la definicion de recursion estructural
+sobre listas "El caso recursivo se escribe usando (cero, una o muchas veces) x y (g xs), pero sin usar el valor de xs ni otros llamados recursivos."
+Por otro lado entrelazar si utiliza recursion estructural ya que en el caso base devuelve un valor fijo (en este caso []) y en el paso recursivo
+no utiliza el valor de xs ni otros llamados recursivos aparte solo utiliza el valor de otra lista ys sobre la cual no se hace la recursion
 -}
-elementosEnPosicionesPares :: [a] -> [a]
-elementosEnPosicionesPares l = foldr (\(x,y) acc -> if even x then acc else y: acc) [] (zip[0..] l)
+entrelazar :: [a] -> [a] -> [a]
+entrelazar = foldr (\x rec ys -> if null ys then x:rec [] else x: head ys : rec (tail ys)) id
 
 --ejercicio 6 
 recr :: (a -> [a] -> b -> b) -> b -> [a] -> b
